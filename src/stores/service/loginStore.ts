@@ -29,13 +29,16 @@ const useLoginStore = defineStore(
       userType.value = UserType.Student
     }
 
+    const setIsActivated = (val: boolean) => (isActivated.value = val)
+
     return {
       isLogin,
       isActivated,
       token,
       userType,
       setLoginData,
-      clearLoginData
+      clearLoginData,
+      setIsActivated
     }
   },
   { persist: true }

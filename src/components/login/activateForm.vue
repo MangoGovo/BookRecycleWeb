@@ -1,5 +1,12 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="补充个人信息" width="600" align-center>
+  <el-dialog
+    v-model="dialogVisible"
+    title="补充个人信息"
+    width="600"
+    :show-close="false"
+    :close-on-click-modal="false"
+    align-center
+  >
     <el-form
       ref="ruleFormRef"
       :model="ruleForm"
@@ -24,7 +31,7 @@
       </el-form-item>
       <el-form-item>
         <div class="w-full justify-end gap-10 flex">
-          <el-button type="primary" plain @click="submitForm">提交</el-button>
+          <el-button type="primary" plain @click="submitForm(ruleFormRef)">提交</el-button>
           <el-button plain type="primary" @click="resetForm(ruleFormRef)">清空</el-button>
         </div>
       </el-form-item>
@@ -35,13 +42,17 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
 import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
-import campusType from '@/types/enums/campusType'
+import CampusType from '@/types/enums/campusType'
+import { useRequest } from 'vue-hooks-plus'
+import { UserAPI } from '@/apis'
+import { closeLoading, startLoading } from '@/utils/loading'
+import { useMainStore } from '@/stores'
 const dialogVisible = ref(false)
-
+const loginStore = useMainStore().useLoginStore()
 interface RuleForm {
   studentID: string
   telephone: string
-  campus: campusType | null
+  campus: CampusType
   address: string
 }
 
@@ -49,22 +60,22 @@ const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   studentID: '',
   telephone: '',
-  campus: null,
+  campus: CampusType.ZH,
   address: ''
 })
 
 const campusOptions = [
   {
     label: '朝晖',
-    value: campusType.ZH
+    value: CampusType.ZH
   },
   {
     label: '屏峰',
-    value: campusType.PF
+    value: CampusType.PF
   },
   {
     label: '莫干山',
-    value: campusType.MGS
+    value: CampusType.MGS
   }
 ]
 
@@ -83,12 +94,28 @@ const rules = reactive<FormRules<RuleForm>>({
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      ElNotification.success('提交成功')
-    } else {
-      console.log('error submit!', fields)
+  await formEl.validate((valid) => {
+    if (!valid) {
+      ElNotification.error('请正确填写信息')
+      return
     }
+    useRequest(() => UserAPI.activate(ruleForm), {
+      onBefore: () => startLoading(),
+      onSuccess(res: any) {
+        if (res.code !== 200) {
+          ElNotification.error(res.msg)
+          return
+        }
+        loginStore.setIsActivated(true)
+        close()
+        ElNotification.success('激活成功')
+      },
+      onError(e) {
+        ElNotification.error('激活失败，请重试')
+        console.log('激活失败', e)
+      },
+      onFinally: () => closeLoading()
+    })
   })
 }
 
@@ -99,6 +126,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 const open = () => {
   dialogVisible.value = true
+}
+const close = () => {
+  dialogVisible.value = false
 }
 defineExpose({ open })
 </script>

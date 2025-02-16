@@ -1,6 +1,6 @@
-enum campusType {
-    ZH,
-    PF,
-    MGS
+enum CampusType {
+  ZH,
+  PF,
+  MGS
 }
-export default campusType
+export default CampusType

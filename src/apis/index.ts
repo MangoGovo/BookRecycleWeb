@@ -1,4 +1,2 @@
-import loginAPI from '@/apis/service/Login/loginAPI.ts'
-export {
-  loginAPI,
-}
+import UserAPI from './user'
+export { UserAPI }

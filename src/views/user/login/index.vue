@@ -74,7 +74,7 @@
 import { ElNotification } from 'element-plus'
 import { ref, computed, watch } from 'vue'
 import { LoginActivateForm } from '@/components'
-import { loginAPI } from '@/apis'
+import { UserAPI } from '@/apis'
 import UserType from '@/types/enums/userType'
 import router from '@/router'
 import { useRequest } from 'vue-hooks-plus'
@@ -107,7 +107,7 @@ const send = () => {
   const t = loginType.value
   useRequest(
     () =>
-      loginAPI({
+      UserAPI.login({
         username: username.value,
         password: password.value,
         type: t
