@@ -1,29 +1,62 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import userViews from '@/views'
-
+import { AdminViews, ReceiverViews, StudentViews, UserViews } from '@/views'
+import { useMainStore } from '@/stores'
+import UserType from '@/types/enums/userType'
+import pinia from '@/stores/createPinia'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/login',
       name: 'login',
-      component: userViews.LoginView
+      component: UserViews.LoginView
     },
     {
       path: '/register',
       name: 'register',
-      component: userViews.RegisterView
+      component: UserViews.RegisterView
     },
     {
       path: '/forget',
       name: 'forget',
-      component: userViews.ForgetView
+      component: UserViews.ForgetView
+    },
+    {
+      path: '/student',
+      name: 'student',
+      component: StudentViews.HomeView
+    },
+    {
+      path: '/receiver',
+      name: 'receiver',
+      component: ReceiverViews.HomeView
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminViews.HomeView
+    },
+    {
+      path: '/',
+      redirect: () => {
+        const loginStore = useMainStore(pinia).useLoginStore(pinia)
+        console.log(loginStore.userType)
+        switch (loginStore.userType) {
+          case UserType.Student:
+            return '/student'
+          case UserType.Receiver:
+            return '/receiver'
+          case UserType.Admin:
+            return '/admin'
+          default:
+            return '/login'
+        }
+      }
     }
   ]
 })
 
 router.beforeEach((to, _, next) => {
-  // const loginStore = useMainStore(pinia).useLoginStore(pinia)
   let pathList: string[] = []
   router.options.routes.forEach((route) => {
     pathList.push(route.path)
@@ -32,7 +65,7 @@ router.beforeEach((to, _, next) => {
     next()
     return
   }
-  next('/login')
+  next('/')
 })
 
 export default router

@@ -17,7 +17,7 @@
             <div class="text-xl mb-5">账号</div>
             <el-input
               class="h-45 my-10 dark:rounded dark:bg-customGray_shallow"
-              :placeholder="userTypes[loginType].msg + '账号'"
+              :placeholder="placeholder + '密码'"
               v-model="username"
             ></el-input>
           </div>
@@ -25,7 +25,7 @@
             <div class="text-xl mb-5">密码</div>
             <el-input
               class="h-45 mt-10 dark:rounded dark:bg-customGray_shallow"
-              :placeholder="userTypes[loginType].msg + '密码'"
+              :placeholder="placeholder + '密码'"
               v-model="password"
               @keyup.enter="send"
               type="password"
@@ -35,9 +35,13 @@
           <div class="w-full">
             <div class="text-xl mb-5">登陆身份</div>
             <el-radio-group v-model="loginType" class="text-center w-full">
-              <el-radio :border="true" v-for="user in userTypes" :value="user.value">{{
-                user.msg
-              }}</el-radio>
+              <el-radio
+                :border="true"
+                v-for="user in userTypes"
+                :key="user.value"
+                :value="user.value"
+                >{{ user.msg }}</el-radio
+              >
             </el-radio-group>
           </div>
         </div>
@@ -68,14 +72,18 @@
 
 <script setup lang="ts">
 import { ElNotification } from 'element-plus'
-import { computed, ref, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { LoginActivateForm } from '@/components'
+import { loginAPI } from '@/apis'
 import UserType from '@/types/enums/userType'
 import router from '@/router'
+import { useRequest } from 'vue-hooks-plus'
+import { startLoading, closeLoading } from '@/utils/loading'
+import { useMainStore } from '@/stores'
 const password = ref<string>('')
 const username = ref<string>('')
 const loginType = ref<number>(UserType.Student)
-
+const loginStore = useMainStore().useLoginStore()
 const userTypes = [
   {
     value: UserType.Student,
@@ -91,10 +99,44 @@ const userTypes = [
   }
 ]
 
+const placeholder = computed(() => {
+  return userTypes.find((e) => e.value === loginType.value)?.msg || ''
+})
+
 const send = () => {
-  ElNotification.success('登陆成功')
+  const t = loginType.value
+  useRequest(
+    () =>
+      loginAPI({
+        username: username.value,
+        password: password.value,
+        type: t
+      }),
+    {
+      onBefore: () => startLoading(),
+      onSuccess(res: any) {
+        if (res.code !== 200) {
+          ElNotification.error(res.msg)
+          return
+        }
+        const data = res.data
+        console.log(data)
+        ElNotification.success('登陆成功')
+        loginStore.setLoginData(true, data.activated, data.token, t)
+        router.push('/')
+      },
+      onError(e) {
+        ElNotification.error('登录失败，请重试')
+        console.log('登录失败', e)
+      },
+      onFinally: () => closeLoading()
+    }
+  )
 }
 
+const activate = () => {
+  openForm()
+}
 const forget = () => {
   router.push('/forget')
 }

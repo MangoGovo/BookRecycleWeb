@@ -2,7 +2,7 @@
   <div class="h-screen bg-base-100 flex flex-col">
     <div class="navbar bg-base-100 shadow-lg gap-10">
       <el-tooltip content="主页" placement="bottom">
-        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow">
+        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow" @click="home">
           <el-icon>
             <HomeFilled />
           </el-icon>
@@ -64,7 +64,12 @@ import { RouterView } from 'vue-router'
 //暗黑模式功能
 import { useDarkModeSwitch } from '@/utils/darkMode'
 import { ChatLineSquare, HomeFilled, UserFilled } from '@element-plus/icons-vue'
+import router from './router'
 const { darkModeStatus } = useDarkModeSwitch() //暗黑模式 状态
+
+const home = () => {
+  router.push('/')
+}
 </script>
 
 <style scoped>
