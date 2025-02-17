@@ -1,6 +1,5 @@
 <template>
   <div class="flex-grow flex justify-evenly gap-70">
-    <LoginActivateForm ref="messageFormRef" />
     <Logo />
     <div class="flex justify-center items-center">
       <el-divider direction="vertical"></el-divider>
@@ -62,8 +61,6 @@
             @click="register"
             >注册</el-button
           >
-
-          <el-button type="primary" @click="openForm">打开表单</el-button>
         </div>
       </div>
     </div>
@@ -72,8 +69,7 @@
 
 <script setup lang="ts">
 import { ElNotification } from 'element-plus'
-import { ref, computed, watch } from 'vue'
-import { LoginActivateForm } from '@/components'
+import { ref, computed, watch, onMounted } from 'vue'
 import { UserAPI } from '@/apis'
 import UserType from '@/types/enums/userType'
 import router from '@/router'
@@ -98,6 +94,11 @@ const userTypes = [
     msg: '管理员'
   }
 ]
+
+onMounted(() => {
+  console.log("清空登陆信息")
+  loginStore.clearLoginData()
+})
 
 const placeholder = computed(() => {
   return userTypes.find((e) => e.value === loginType.value)?.msg || ''
@@ -134,26 +135,12 @@ const send = () => {
   )
 }
 
-const activate = () => {
-  openForm()
-}
 const forget = () => {
   router.push('/forget')
 }
 
 const register = () => {
   router.push('/register')
-}
-
-const pass = () => {
-  ElNotification.success('验证成功')
-}
-const verify = ref(false)
-
-const messageFormRef = ref()
-
-const openForm = () => {
-  messageFormRef.value?.open()
 }
 </script>
 

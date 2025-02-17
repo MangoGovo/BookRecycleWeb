@@ -2,6 +2,7 @@ import { request } from '@/apis/axios'
 import type CampusType from '@/types/enums/campusType'
 
 const activate = (data: {
+  name: string
   studentID: string
   telephone: string
   address: string
@@ -9,7 +10,8 @@ const activate = (data: {
 }) => {
   return request('/api/user/activate', {
     data: data,
-    method: 'POST'
+    method: 'POST',
+    jwt: true
   })
 }
 

@@ -1,6 +1,8 @@
 <template>
-  <div class="h-screen bg-base-100 flex flex-col">
+  <div class="bg-base-100 flex flex-col" style="min-height: 100vh">
+    <!-- <div class="h-screen bg-base-100 flex flex-col" > -->
     <ActivateForm ref="activateForm" />
+    <FeedbackForm ref="feedbackForm" />
     <div class="navbar bg-base-100 shadow-lg gap-10">
       <el-tooltip content="主页" placement="bottom">
         <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow" @click="home">
@@ -24,7 +26,7 @@
         style="--el-switch-on-color: #000000"
       />
       <div class="flex gap-5">
-        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow">
+        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow" @click="feedback">
           <el-icon>
             <MessageBox />
           </el-icon>
@@ -36,18 +38,22 @@
           </el-icon>
         </a>
 
-        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow">
-          <el-dropdown placement="bottom-end">
+        <el-dropdown placement="bottom-end">
+          <a
+            class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow"
+            @click="usercenter"
+          >
             <el-icon>
               <UserFilled />
             </el-icon>
-            <template #dropdown>
-              <el-dropdown-menu>
-                <el-dropdown-item @click="logout()">注销</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
-        </a>
+          </a>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-if="loginStore.isLogin" @click="logout"> 注销 </el-dropdown-item>
+              <el-dropdown-item v-else disabled> 注销 </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </div>
 
@@ -62,19 +68,21 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView } from 'vue-router'
 import { useDarkModeSwitch } from '@/utils/darkMode'
 import { ChatLineSquare, HomeFilled, UserFilled } from '@element-plus/icons-vue'
 import router from './router'
-import ActivateForm from './components/login/activateForm.vue'
-import { ref, watchEffect } from 'vue'
+import { ref, watch } from 'vue'
 import { useMainStore } from '@/stores'
 import { ElNotification } from 'element-plus'
 
+import ActivateForm from './components/user/activateForm.vue'
+import FeedbackForm from './components/user/feedbackForm.vue'
 const { darkModeStatus } = useDarkModeSwitch()
 const loginStore = useMainStore().useLoginStore()
-const route = useRoute()
+
 const activateForm = ref<InstanceType<typeof ActivateForm> | null>(null)
+const feedbackForm = ref<InstanceType<typeof FeedbackForm> | null>(null)
 
 const home = () => {
   router.push('/')
@@ -84,14 +92,29 @@ const logout = () => {
   loginStore.clearLoginData()
   router.push('/login')
 }
-watchEffect(async () => {
-  // 激活账号
-  await router.isReady() // 等待路由加载完成
-  if (!['/login', '/register'].includes(route.path) && !loginStore.isActivated) {
-    ElNotification.warning('第一次登陆,请先补充个人信息')
-    activateForm.value?.open()
-  }
-})
+
+const feedback = () => {
+  feedbackForm.value?.open()
+}
+
+const usercenter = () => {
+  router.push('/usercenter')
+}
+watch(
+  router.currentRoute,
+  (newRouter) => {
+    if (
+      !['/login', '/register', '/forget', '/'].includes(newRouter.path) &&
+      !loginStore.isActivated
+    ) {
+      ElNotification.warning('初次登陆，请先补充个人信息')
+      activateForm.value?.open()
+    } else {
+      activateForm.value?.close()
+    }
+  },
+  { immediate: true } // 组件加载时立即执行一次
+)
 </script>
 
 <style scoped>

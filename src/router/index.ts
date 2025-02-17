@@ -3,6 +3,8 @@ import { AdminViews, ReceiverViews, StudentViews, UserViews } from '@/views'
 import { useMainStore } from '@/stores'
 import UserType from '@/types/enums/userType'
 import pinia from '@/stores/createPinia'
+import useLoginStore from '@/stores/service/loginStore'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -20,6 +22,11 @@ const router = createRouter({
       path: '/forget',
       name: 'forget',
       component: UserViews.ForgetView
+    },
+    {
+      path: '/usercenter',
+      name: 'usercenter',
+      component: UserViews.UserCenterView
     },
     {
       path: '/student',
@@ -40,7 +47,6 @@ const router = createRouter({
       path: '/',
       redirect: () => {
         const loginStore = useMainStore(pinia).useLoginStore(pinia)
-        console.log(loginStore.userType)
         switch (loginStore.userType) {
           case UserType.Student:
             return '/student'
@@ -56,11 +62,14 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to, _, next) => {
-  let pathList: string[] = []
-  router.options.routes.forEach((route) => {
-    pathList.push(route.path)
-  })
+router.beforeEach((to, from, next) => {
+  const loginStore = useMainStore(pinia).useLoginStore(pinia)
+  console.log(loginStore.isLogin)
+  if (!loginStore.isLogin && !['/login', '/register', '/forget'].includes(to.path)) {
+    next({ path: '/login', replace: true, force: true })
+    return
+  }
+  let pathList: string[] = router.options.routes.map((route) => route.path)
   if (pathList.includes(to.path)) {
     next()
     return

@@ -1,0 +1,3 @@
+type UserInfo = {
+    username:string;
+}

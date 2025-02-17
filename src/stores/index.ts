@@ -6,7 +6,7 @@ export const useMainStore = defineStore(
   () => {
     return {
       useDarkModeStore,
-      useLoginStore
+      useLoginStore,
     }
   },
   { persist: true }

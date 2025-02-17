@@ -1,6 +1,6 @@
 <template>
     <div class="flex justify-center items-center w-1/2">
-        <el-image @click="info" class="h-500 hover:scale-110 select-none  duration-700"
+        <el-image draggable="false" @click="info" class="h-500 hover:scale-110 select-none duration-700"
             src='/logo.webp'></el-image>
     </div>
 </template>

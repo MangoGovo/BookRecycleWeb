@@ -15,6 +15,10 @@
       size="large"
       status-icon
     >
+      <el-form-item label="姓名" prop="name">
+        <el-input v-model="ruleForm.name" placeholder="输入姓名" />
+      </el-form-item>
+
       <el-form-item label="学号" prop="studentID">
         <el-input v-model="ruleForm.studentID" placeholder="输入学号" />
       </el-form-item>
@@ -50,6 +54,7 @@ import { useMainStore } from '@/stores'
 const dialogVisible = ref(false)
 const loginStore = useMainStore().useLoginStore()
 interface RuleForm {
+  name: string
   studentID: string
   telephone: string
   campus: CampusType
@@ -58,6 +63,7 @@ interface RuleForm {
 
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
+  name: '',
   studentID: '',
   telephone: '',
   campus: CampusType.ZH,
@@ -80,6 +86,7 @@ const campusOptions = [
 ]
 
 const rules = reactive<FormRules<RuleForm>>({
+  name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
   studentID: [{ required: true, message: '请输入学号', trigger: 'blur' }],
   telephone: [
     { required: true, message: '请输入手机号' },
@@ -130,5 +137,5 @@ const open = () => {
 const close = () => {
   dialogVisible.value = false
 }
-defineExpose({ open })
+defineExpose({ open, close })
 </script>

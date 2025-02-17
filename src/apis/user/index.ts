@@ -1,3 +1,4 @@
 import login from './login'
 import activate from './activate'
-export default { login, activate }
+import info from './info'
+export default { login, activate, info }
