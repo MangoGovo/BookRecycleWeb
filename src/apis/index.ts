@@ -1,2 +1,3 @@
 import UserAPI from './user'
-export { UserAPI }
+import MarketAPI from './market'
+export { UserAPI, MarketAPI }
