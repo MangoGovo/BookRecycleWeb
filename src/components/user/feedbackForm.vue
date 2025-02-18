@@ -1,7 +1,7 @@
 <template>
   <el-dialog v-model="dialogVisible" title="意见反馈" width="600" align-center>
     <el-form
-      :ref="feedbackForm"
+      ref="feedbackForm"
       :model="ruleForm"
       :rules="rules"
       label-width="auto"

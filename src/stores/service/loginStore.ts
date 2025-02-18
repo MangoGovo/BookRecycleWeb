@@ -13,7 +13,7 @@ const useLoginStore = defineStore(
     const setLoginData = (
       _isLogin: boolean,
       _isActivated: boolean,
-      _token: string,                                     
+      _token: string,
       _userType: UserType
     ) => {
       isLogin.value = _isLogin

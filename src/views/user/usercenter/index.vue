@@ -41,7 +41,7 @@
           </div>
           <hr
             class="boder my-4 border-gray-400"
-            v-if="index != bill.length - 1"
+            v-if="index + 1 != bills?.length"
             style="border-top-width: 1.5px"
           />
         </div>
@@ -58,24 +58,6 @@ import { ref, reactive } from 'vue'
 import { useRequest } from 'vue-hooks-plus'
 
 const moneyVisible = ref<boolean>(false)
-const bill = reactive([
-  {
-    date: '2025-2-26',
-    money: '100.00'
-  },
-  {
-    date: '2025-2-26',
-    money: '100.00'
-  },
-  {
-    date: '2025-2-26',
-    money: '100.00'
-  },
-  {
-    date: '2025-2-26',
-    money: '100.00'
-  }
-])
 const userInfo = reactive({
   studentID: '',
   name: '',
@@ -87,7 +69,7 @@ type bill = {
   money: string
   date: string
 }
-const bills = ref<bill[] | null>(null)
+const bills = ref<bill[]>()
 useRequest(() => UserAPI.info(), {
   onBefore: () => startLoading(),
   onSuccess(res: any) {

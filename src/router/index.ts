@@ -34,9 +34,14 @@ const router = createRouter({
       component: StudentViews.HomeView
     },
     {
-      path: '/receiver',
-      name: 'receiver',
-      component: ReceiverViews.HomeView
+      path: '/student/market',
+      name: '/student/market',
+      component: StudentViews.MarketView
+    },
+    {
+      path: '/student/sell',
+      name: '/student/sell',
+      component: StudentViews.SellView
     },
     {
       path: '/admin',
@@ -64,7 +69,6 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const loginStore = useMainStore(pinia).useLoginStore(pinia)
-  console.log(loginStore.isLogin)
   if (!loginStore.isLogin && !['/login', '/register', '/forget'].includes(to.path)) {
     next({ path: '/login', replace: true, force: true })
     return

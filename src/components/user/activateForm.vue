@@ -18,7 +18,6 @@
       <el-form-item label="姓名" prop="name">
         <el-input v-model="ruleForm.name" placeholder="输入姓名" />
       </el-form-item>
-
       <el-form-item label="学号" prop="studentID">
         <el-input v-model="ruleForm.studentID" placeholder="输入学号" />
       </el-form-item>
