@@ -39,7 +39,7 @@
               type="password"
             ></el-input>
           </div>
-          <div class="w-full" v-if="loginType == UserType.Admin">
+          <div class="w-full" v-if="formData.userType == UserType.Admin">
             <div class="text-xl mb-5">管理员注册密码</div>
             <el-input
               class="h-45 mt-10 dark:rounded dark:bg-customGray_shallow"
@@ -93,7 +93,6 @@ import { closeLoading, startLoading } from '@/utils/loading'
 import { useMainStore } from '@/stores'
 
 const loginStore = useMainStore().useLoginStore()
-const loginType = ref<number>(UserType.Student)
 const formData = ref({
   username: '',
   password: '',
@@ -118,7 +117,7 @@ const userTypes = [
 ]
 
 const accountPlaceholder = computed(() => {
-  return userTypes.find((e) => e.value === loginType.value)?.msg || ''
+  return userTypes.find((e) => e.value === formData.value.userType)?.msg || ''
 })
 
 const back = () => {

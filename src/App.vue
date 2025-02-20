@@ -32,7 +32,11 @@
           </el-icon>
         </a>
 
-        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow" @click="chat">
+        <a
+          class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow"
+          @click="chat"
+          v-if="loginStore.userType === UserType.Student"
+        >
           <el-icon>
             <ChatLineSquare />
           </el-icon>
@@ -78,6 +82,7 @@ import { ElNotification } from 'element-plus'
 
 import ActivateForm from './components/user/activateForm.vue'
 import FeedbackForm from './components/user/feedbackForm.vue'
+import UserType from './types/enums/userType'
 const { darkModeStatus } = useDarkModeSwitch()
 const loginStore = useMainStore().useLoginStore()
 

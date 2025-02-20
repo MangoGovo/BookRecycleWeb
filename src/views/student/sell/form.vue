@@ -13,7 +13,7 @@
         </div>
       </el-form-item>
 
-      <el-form-item label="旧书照片" prop="fileList">
+      <el-form-item label="旧书照片" prop="img">
         <el-upload
           class="upload-box"
           action="#"
@@ -22,7 +22,7 @@
           :on-preview="handlePreview"
           :on-remove="handleRemove"
         >
-          <el-icon><Plus /></el-icon>
+          <el-icon v-if="form.img != ''"><Plus /></el-icon>
         </el-upload>
       </el-form-item>
 
@@ -68,7 +68,7 @@ const form = ref({
   address: '',
   phone: '',
   remark: '',
-  fileList: ['']
+  img: ''
 })
 
 const rules = {
@@ -91,8 +91,8 @@ const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
 }
 
 // 移除图片
-const handleRemove = (file: any, fileList: string[]) => {
-  form.value.fileList = fileList
+const handleRemove = (file: any, img: string) => {
+  form.value.img = img
 }
 // 提交表单
 const submitForm = (formEl: FormInstance | undefined) => {

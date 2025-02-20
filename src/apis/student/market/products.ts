@@ -1,9 +1,9 @@
 import { request } from '@/apis/axios'
 
-const products = (data: { page: Number; size: Number }) => {
+const products = (data: { search: string }) => {
   return request('/api/student/market/products', {
-    params: data,
-    method: 'GET',
+    method: 'POST',
+    data: data,
     jwt: true
   })
 }

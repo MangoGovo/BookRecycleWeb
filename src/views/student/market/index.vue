@@ -17,9 +17,16 @@
               </el-icon>
             </div>
           </el-tooltip>
-          <el-input style="width: 50%" size="large" placeholder="搜索书籍" :prefix-icon="Search">
+          <el-input
+            style="width: 50%"
+            size="large"
+            v-model="searchContent"
+            placeholder="搜索书籍"
+            :prefix-icon="Search"
+            @keyup.enter="send"
+          >
             <template #suffix>
-              <el-button :icon="Search" circle />
+              <el-button :icon="Search" @click="send" circle />
             </template>
           </el-input>
           <el-button type="primary" plain size="large" @click="SellDialog?.open()"
@@ -72,21 +79,18 @@ const selectedBook = ref<book>()
 const BookInfoView = ref<InstanceType<typeof BookInfo> | null>(null)
 const SellDialog = ref<InstanceType<typeof Sell> | null>(null)
 const StudentOrdersDialog = ref<InstanceType<typeof StudentOrders> | null>(null)
+const searchContent = ref<string>('')
 /**
  * TODO
  * 分页查询
  * 查询参数
  *
  */
-
-onMounted(() => {
-  const _page = Number(route.query.page)
-
+const send = () => {
   useRequest(
     () =>
       MarketAPI.products({
-        page: _page,
-        size: 20
+        search: searchContent.value
       }),
     {
       onBefore: () => startLoading(),
@@ -104,6 +108,9 @@ onMounted(() => {
       onFinally: () => closeLoading()
     }
   )
+}
+onMounted(() => {
+  send()
 })
 
 const showInfo = (book: book) => {

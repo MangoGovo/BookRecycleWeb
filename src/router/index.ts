@@ -53,6 +53,14 @@ const router = createRouter({
       component: StudentViews.ChatView
     },
     {
+      path: '/receiver',
+      component: ReceiverViews.HomeView
+    },
+    {
+      path: '/receiver/check',
+      component: ReceiverViews.CheckView
+    },
+    {
       path: '/',
       redirect: () => {
         const loginStore = useMainStore(pinia).useLoginStore(pinia)
