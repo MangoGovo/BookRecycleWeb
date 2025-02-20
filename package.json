@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "release": "sh release.sh"
+    "release": "release.bat"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -18,6 +18,7 @@
     "pinia": "^2.3.1",
     "pinia-plugin-persistedstate": "^4.2.0",
     "pnpm": "^9.15.4",
+    "socket.io-client": "^4.8.1",
     "unplugin-element-plus": "^0.9.1",
     "vue": "^3.5.13",
     "vue-hooks-plus": "^2.2.3",

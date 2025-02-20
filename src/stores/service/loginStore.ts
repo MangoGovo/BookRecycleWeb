@@ -9,13 +9,15 @@ const useLoginStore = defineStore(
     const isActivated = ref<boolean>(false)
     const token = ref<string>('')
     const userType = ref<UserType | null>(null)
-
+    const userID = ref<number>()
     const setLoginData = (
+      _userID: number,
       _isLogin: boolean,
       _isActivated: boolean,
       _token: string,
       _userType: UserType
     ) => {
+      userID.value = _userID
       isLogin.value = _isLogin
       isActivated.value = _isActivated
       token.value = _token
@@ -23,6 +25,7 @@ const useLoginStore = defineStore(
     }
 
     const clearLoginData = () => {
+      userID.value = 0
       isLogin.value = false
       isActivated.value = false
       token.value = ''
@@ -36,6 +39,7 @@ const useLoginStore = defineStore(
       isActivated,
       token,
       userType,
+      userID,
       setLoginData,
       clearLoginData,
       setIsActivated

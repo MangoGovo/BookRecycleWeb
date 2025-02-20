@@ -1,11 +1,12 @@
 export type book = {
   id: number
-  title: string
-  cover_url: string
-  subject: string
-  print_edition: string
+  user_id: number
+  name: string
+  course: string
+  edition: string
   publisher: string
-  condition: string // 完好程度
-  remark: string
+  completeness: string // 完好程度
+  img: string
   price: string
+  note: string
 }

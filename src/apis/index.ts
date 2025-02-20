@@ -1,3 +1,4 @@
 import UserAPI from './user'
-import MarketAPI from './market'
-export { UserAPI, MarketAPI }
+import MarketAPI from './student/market'
+import feedback from './student/feedback'
+export { UserAPI, MarketAPI, feedback }

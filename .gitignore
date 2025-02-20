@@ -131,3 +131,4 @@ dist
 
 .vscode
 release.sh
+release.bat

@@ -3,8 +3,8 @@ import type CampusType from '@/types/enums/campusType'
 
 const activate = (data: {
   name: string
-  studentID: string
-  telephone: string
+  student_id: string
+  phone: string
   address: string
   campus: CampusType
 }) => {

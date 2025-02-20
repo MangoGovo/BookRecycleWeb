@@ -123,7 +123,7 @@ const send = () => {
         const data = res.data
         console.log(data)
         ElNotification.success('登陆成功')
-        loginStore.setLoginData(true, data.activated, data.token, t)
+        loginStore.setLoginData(data.user_id,true, data.activated, data.token, t)
         router.push('/')
       },
       onError(e) {

@@ -18,11 +18,11 @@
       <el-form-item label="姓名" prop="name">
         <el-input v-model="ruleForm.name" placeholder="输入姓名" />
       </el-form-item>
-      <el-form-item label="学号" prop="studentID">
-        <el-input v-model="ruleForm.studentID" placeholder="输入学号" />
+      <el-form-item label="学号" prop="student_id">
+        <el-input v-model="ruleForm.student_id" placeholder="输入学号" />
       </el-form-item>
-      <el-form-item label="手机号" prop="telephone">
-        <el-input v-model="ruleForm.telephone" placeholder="输入手机号" />
+      <el-form-item label="手机号" prop="phone">
+        <el-input v-model="ruleForm.phone" placeholder="输入手机号" />
       </el-form-item>
       <el-form-item label="校区" prop="campus">
         <el-select v-model="ruleForm.campus" placeholder="选择校区">
@@ -54,8 +54,8 @@ const dialogVisible = ref(false)
 const loginStore = useMainStore().useLoginStore()
 interface RuleForm {
   name: string
-  studentID: string
-  telephone: string
+  student_id: string
+  phone: string
   campus: CampusType
   address: string
 }
@@ -63,8 +63,8 @@ interface RuleForm {
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   name: '',
-  studentID: '',
-  telephone: '',
+  student_id: '',
+  phone: '',
   campus: CampusType.ZH,
   address: ''
 })
@@ -86,8 +86,8 @@ const campusOptions = [
 
 const rules = reactive<FormRules<RuleForm>>({
   name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
-  studentID: [{ required: true, message: '请输入学号', trigger: 'blur' }],
-  telephone: [
+  student_id: [{ required: true, message: '请输入学号', trigger: 'blur' }],
+  phone: [
     { required: true, message: '请输入手机号' },
     {
       pattern: /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/,

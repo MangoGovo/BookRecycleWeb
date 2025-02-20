@@ -34,7 +34,10 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue'
-import { type FormInstance, type FormRules } from 'element-plus'
+import { ElNotification, type FormInstance, type FormRules } from 'element-plus'
+import { useRequest } from 'vue-hooks-plus'
+import { feedback } from '@/apis'
+import { closeLoading, startLoading } from '@/utils/loading'
 const dialogVisible = ref(false)
 const feedbackForm = ref<FormInstance>()
 const ruleForm = reactive({
@@ -47,27 +50,29 @@ const rules = reactive<FormRules<typeof ruleForm>>({
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
-  // if (!formEl) return
-  // await formEl.validate((valid) => {
-  //   if (!valid) {
-  //     ElNotification.error('请正确填写信息')
-  //     return
-  //   }
-  //   useRequest(() => UserAPI.activate(), {
-  //     onBefore: () => startLoading(),
-  //     onSuccess(res: any) {
-  //       if (res.code !== 200) {
-  //         ElNotification.error(res.msg)
-  //         return
-  //       }
-  //     },
-  //     onError(e) {
-  //       ElNotification.error('激活失败，请重试')
-  //       console.log('激活失败', e)
-  //     },
-  //     onFinally: () => closeLoading()
-  //   })
-  // })
+  if (!formEl) return
+  await formEl.validate((valid) => {
+    if (!valid) {
+      ElNotification.error('请正确填写信息')
+      return
+    }
+    useRequest(() => feedback({ content: ruleForm.content, anonymity: ruleForm.isAnonymous }), {
+      onBefore: () => startLoading(),
+      onSuccess(res: any) {
+        if (res.code !== 200) {
+          ElNotification.error(res.msg)
+          return
+        }
+        ElNotification.success("反馈成功")
+        formEl.resetFields()
+      },
+      onError(e) {
+        ElNotification.error('反馈失败，请重试')
+        console.log('反馈失败', e)
+      },
+      onFinally: () => closeLoading()
+    })
+  })
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

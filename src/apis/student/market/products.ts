@@ -1,7 +1,7 @@
 import { request } from '@/apis/axios'
 
 const products = (data: { page: Number; size: Number }) => {
-  return request('/api/market/products', {
+  return request('/api/student/market/products', {
     params: data,
     method: 'GET',
     jwt: true

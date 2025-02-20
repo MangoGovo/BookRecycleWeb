@@ -49,6 +49,10 @@ const router = createRouter({
       component: AdminViews.HomeView
     },
     {
+      path: '/student/chat',
+      component: StudentViews.ChatView
+    },
+    {
       path: '/',
       redirect: () => {
         const loginStore = useMainStore(pinia).useLoginStore(pinia)

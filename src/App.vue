@@ -32,7 +32,7 @@
           </el-icon>
         </a>
 
-        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow">
+        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow" @click="chat">
           <el-icon>
             <ChatLineSquare />
           </el-icon>
@@ -86,6 +86,10 @@ const feedbackForm = ref<InstanceType<typeof FeedbackForm> | null>(null)
 
 const home = () => {
   router.push('/')
+}
+
+const chat = () => {
+  router.push('/student/chat')
 }
 
 const logout = () => {
