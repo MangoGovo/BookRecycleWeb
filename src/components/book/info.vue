@@ -16,7 +16,14 @@
           <p class="text-xl my-5">备注：{{ bookInfo?.note }}</p>
           <p class="text-2xl my-29 text-center font-semibold">售价：{{ bookInfo?.price }}元</p>
           <div class="flex justify-center">
-            <el-button @click="contactOwner" size="large" type="primary" plain>联系主人</el-button>
+            <el-button
+              @click="contactOwner"
+              size="large"
+              type="primary"
+              plain
+              :disabled="loginStore.userID == bookInfo.user_id"
+              >联系主人{{ loginStore.userID == bookInfo.user_id ? '(您自己)' : '' }}</el-button
+            >
           </div>
         </el-card>
       </div>
@@ -28,19 +35,23 @@
 import { ref } from 'vue'
 import { ElDialog, ElButton } from 'element-plus'
 import { type book } from '@/types/book'
+import { useMainStore } from '@/stores'
+import router from '@/router'
 
 const dialogVisible = ref(false)
-
+const tempStore = useMainStore().useTempStore()
+const loginStore = useMainStore().useLoginStore()
 const open = () => {
   dialogVisible.value = true
-  console.log('dialogVisible:', dialogVisible.value)
 }
 
 const contactOwner = () => {
-  alert('联系主人')
+  tempStore.setContactor(props.bookInfo.name, props.bookInfo.user_id)
+  dialogVisible.value = false
+  router.push('/student/chat')
 }
-defineProps<{
-  bookInfo: book | undefined
+const props = defineProps<{
+  bookInfo: book
 }>()
 
 defineExpose({

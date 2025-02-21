@@ -6,21 +6,26 @@
         <img w-full :src="previewImg" alt="Preview Image" />
       </el-dialog>
       <el-form label-width="100px" ref="formRef" :model="form" :rules="rules">
-        <el-form-item label="书名" prop="title">
+        <el-form-item label="书名" prop="name">
           <div class="flex items-center">
-            <el-input v-model="form.title" placeholder="请输入完整名称"> </el-input>
+            <el-input v-model="form.name" placeholder="请输入完整名称"> </el-input>
           </div>
         </el-form-item>
 
-        <el-form-item label="适用课程" prop="subject">
+        <el-form-item label="作者" prop="author">
+          <div class="flex items-center">
+            <el-input v-model="form.author" placeholder="请输入作者"> </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="适用课程" prop="course">
           <div class="flex items-center w-full">
-            <el-input v-model="form.subject" placeholder=""> </el-input>
+            <el-input v-model="form.course" placeholder=""> </el-input>
           </div>
         </el-form-item>
 
-        <el-form-item label="印刷批次" prop="print_edition">
+        <el-form-item label="印刷批次" prop="edition">
           <div class="flex items-center w-full">
-            <el-input v-model="form.print_edition" placeholder=""> </el-input>
+            <el-input v-model="form.edition" placeholder=""> </el-input>
           </div>
         </el-form-item>
 
@@ -30,24 +35,17 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="完好程度" prop="condition">
+        <el-form-item label="完好程度" prop="completeness">
           <div class="flex items-center w-full">
-            <el-input v-model="form.condition" placeholder="请描述书籍有无折痕、污渍、字迹、批注等">
+            <el-input
+              v-model="form.completeness"
+              placeholder="请描述书籍有无折痕、污渍、字迹、批注等"
+            >
             </el-input>
           </div>
         </el-form-item>
-
-        <el-form-item label="旧书照片" prop="fileList">
-          <el-upload
-            class="upload-box"
-            action="#"
-            list-type="picture-card"
-            :auto-upload="false"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-          >
-            <el-icon><Plus /></el-icon>
-          </el-upload>
+        <el-form-item label="书籍图片" prop="img">
+          <ImageUploader v-model="form.img" />
         </el-form-item>
 
         <el-form-item label="售价" prop="price">
@@ -58,9 +56,9 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="备注" prop="remark">
+        <el-form-item label="备注" prop="note">
           <div class="flex items-center w-full">
-            <el-input v-model="form.remark" type="textarea" rows="6" placeholder=""> </el-input>
+            <el-input v-model="form.note" type="textarea" rows="6" placeholder=""> </el-input>
           </div>
         </el-form-item>
 
@@ -76,9 +74,12 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
-import type { FormInstance, UploadProps } from 'element-plus'
+import { reactive, ref } from 'vue'
+import { ElNotification, type FormInstance } from 'element-plus'
+import { ImageUploader } from '@/components'
+import { useDefaultRequest } from '@/utils/request'
+import { MarketAPI } from '@/apis'
+import router from '@/router'
 
 // 是否显示预览
 const showPreview = ref<boolean>(false)
@@ -86,40 +87,42 @@ const formVisible = ref<boolean>(false)
 const previewImg = ref<string>('')
 const formRef = ref<FormInstance>()
 // 表单数据
-const form = ref({
-  title: '',
-  subject: '',
-  print_edition: '',
+const form = reactive({
+  name: '',
+  author: '',
+  course: '',
+  edition: '',
   publisher: '',
-  condition: '',
-  fileList: [''],
+  completeness: '',
+  img: '',
   price: '',
-  remark: ''
+  note: ''
 })
 
 const rules = {
-  title: [{ required: true, message: '请输入标题', trigger: 'blur' }],
-  subject: [{ required: true, message: '请输入适用科目', trigger: 'blur' }],
-//   print_edition: [{ required: true, message: '请输入印刷版次', trigger: 'blur' }],
+  name: [{ required: true, message: '请输入标题', trigger: 'blur' }],
+  author: [{ required: true, message: '请输入作者', trigger: 'blur' }],
+  course: [{ required: true, message: '请输入适用科目', trigger: 'blur' }],
   publisher: [{ required: true, message: '请输入出版商', trigger: 'blur' }],
-  condition: [{ required: true, message: '请输入完好程度', trigger: 'blur' }],
+  completeness: [{ required: true, message: '请输入完好程度', trigger: 'blur' }],
   price: [{ required: true, message: '请输入售价', trigger: 'blur' }],
-  fileList: [{ required: true, message: '请上传至少一张旧书照片', trigger: 'change' }]
+  img: [{ required: true, message: '请上传旧书照片', trigger: 'change' }]
 }
 
-// 图片预览
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  previewImg.value = uploadFile.url!
-  showPreview.value = true
-}
-
-// 移除图片
-const handleRemove = (file: any, fileList: string[]) => {
-  form.value.fileList = fileList
-}
 // 提交表单
-const submitForm = (formEl: FormInstance | undefined) => {
-  console.log('提交数据：', form.value)
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid) => {
+    if (!valid) {
+      ElNotification.error('请正确填写信息')
+      return
+    }
+    useDefaultRequest(MarketAPI.uploadProducts(form), () => {
+      ElNotification.success('上传成功')
+      close()
+      router.go(0)
+    })
+  })
 }
 // 清空表单
 const resetForm = (formEl: FormInstance | undefined) => {
@@ -129,6 +132,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 const open = () => {
   formVisible.value = true
+}
+const close = () => {
+  formVisible.value = false
 }
 defineExpose({ open })
 </script>

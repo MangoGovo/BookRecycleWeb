@@ -3,12 +3,14 @@
     <el-aside width="250px">
       <el-scrollbar>
         <el-menu
-          :default-active="activeChat"
+          :default-active="String(activeChat)"
           @select="handleChatSelect"
           :collapse="false"
           v-for="(msg, other) in computedMaps.msgMap"
         >
-          <el-menu-item :index="other" :key="other">{{ computedMaps.nameMap[other] }}</el-menu-item>
+          <el-menu-item :index="String(other)" :key="other">{{
+            computedMaps.nameMap[other]
+          }}</el-menu-item>
         </el-menu>
       </el-scrollbar>
     </el-aside>
@@ -19,11 +21,7 @@
         <span class="font-bold text-xl">{{ currentChatName }}</span>
       </div>
       <el-scrollbar class="">
-        <div
-          v-for="msg in computedMaps.msgMap[activeChat || 0]"
-          :key="msg.id"
-          class="message"
-        >
+        <div v-for="msg in computedMaps.msgMap[activeChat || 0]" :key="msg.id" class="message">
           <p :class="msg.sender === userID ? 'text-right' : 'text-left'">
             <span class="message-sender"
               >{{ msg.sender === userID ? '我' : msg.sender_name }}:
@@ -50,11 +48,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useWebSocket } from '@/utils/websocket'
 import type { messageResp } from '@/types/message'
 import { useMainStore } from '@/stores'
-import receiver from '@/views/receiver'
 
 const { sendMessage, messageList } = useWebSocket()
 const loginStore = useMainStore().useLoginStore()
@@ -66,7 +63,6 @@ const computedMaps = computed(() => {
     nameMap[e.sender] = e.sender_name
     nameMap[e.receiver] = e.receiver_name
     const other = userID === e.sender ? e.receiver : e.sender
-    console.log(userID)
     if (!(other in msgMap)) {
       msgMap[other] = []
     }
@@ -83,8 +79,11 @@ const newMessage = ref('') // 新消息
 const handleChatSelect = (index: number) => {
   const i = Number(index)
   activeChat.value = i
-  currentChatName.value = computedMaps.value.nameMap[i]
 }
+
+watch([activeChat, computedMaps], () => {
+  if (activeChat.value) currentChatName.value = computedMaps.value.nameMap[activeChat.value]
+})
 
 // 发送消息
 const send = () => {
@@ -97,7 +96,21 @@ const send = () => {
   }
 }
 
-onUnmounted(()=>{
+// 处理跳转自动发信息
+const tempStore = useMainStore().useTempStore()
+onMounted(() =>
+  (async () => {
+    const contactor = tempStore.pushWithContactor
+    if (contactor !== null) {
+      handleChatSelect(contactor.receiver_id)
+      await sendMessage({
+        content: `你好, 我对你的书《${contactor.bookname}》很感兴趣, 方便聊一聊吗`,
+        receiver: contactor.receiver_id
+      })
+    }
+  })()
+)
+onUnmounted(() => {
   messageList.value = []
 })
 </script>

@@ -50,6 +50,7 @@ const router = createRouter({
     },
     {
       path: '/student/chat',
+      name: '/student/chat',
       component: StudentViews.ChatView
     },
     {

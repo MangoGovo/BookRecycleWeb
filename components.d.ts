@@ -10,6 +10,8 @@ declare module 'vue' {
     ActivateForm: typeof import('./src/components/user/activateForm.vue')['default']
     Bookinfo: typeof import('./src/components/receiver/bookinfo.vue')['default']
     Check: typeof import('./src/components/receiver/check.vue')['default']
+    copy: typeof import('./src/components/student/sell copy.vue')['default']
+    Edit: typeof import('./src/components/student/edit.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
@@ -55,6 +57,7 @@ declare module 'vue' {
     Orders: typeof import('./src/components/student/orders.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Sell: typeof import('./src/components/student/sell.vue')['default']
     Upload: typeof import('./src/components/file/upload.vue')['default']
   }
 }

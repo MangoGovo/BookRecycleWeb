@@ -1,13 +1,13 @@
 <template>
   <div class="w-full">
-    <BookInfo :bookInfo="selectedBook" ref="BookInfoView" />
+    <BookInfo v-if="selectedBook" :bookInfo="selectedBook" ref="BookInfoView" />
     <Sell ref="SellDialog" />
     <StudentOrders ref="StudentOrdersDialog" />
     <el-container>
       <el-header class="my-20">
         <!-- 二级导航栏 -->
         <div class="w-full mx-10 px-50 flex flex-row justify-between items-center">
-          <el-tooltip content="查看订单" placement="bottom-start">
+          <el-tooltip content="我的书籍" placement="bottom-start">
             <div
               class="btn btn-ghost h-50 w-50 text-xl dark:hover:bg-customGray_more_shallow"
               @click="StudentOrdersDialog?.open()"
@@ -71,10 +71,7 @@ import { useRequest } from 'vue-hooks-plus'
 import { useRoute } from 'vue-router'
 import { type book } from '@/types/book'
 import { BookInfo, StudentOrders } from '@/components'
-import Sell from './sell.vue'
-const route = useRoute()
-const showBill = () => {}
-const uploadBook = () => {}
+import Sell from '@/components/student/sell.vue'
 const selectedBook = ref<book>()
 const BookInfoView = ref<InstanceType<typeof BookInfo> | null>(null)
 const SellDialog = ref<InstanceType<typeof Sell> | null>(null)

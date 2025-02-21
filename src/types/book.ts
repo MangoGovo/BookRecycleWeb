@@ -2,6 +2,7 @@ export type book = {
   id: number
   user_id: number
   name: string
+  author:string
   course: string
   edition: string
   publisher: string

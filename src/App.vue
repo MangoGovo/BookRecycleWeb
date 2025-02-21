@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    <router-view v-slot="{ Component, route }" class="overflow-none">
+    <router-view v-slot="{ Component, route }" class="overflow-none" :key="$route.fullPath">
       <transition name="fade" mode="out-in">
         <div :key="route.name" class="flex flex-grow">
           <component :is="Component" />
