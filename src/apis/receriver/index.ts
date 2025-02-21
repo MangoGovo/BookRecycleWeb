@@ -1,3 +1,3 @@
 import currentOrder from './currentOrder'
-import orders from './orders'
-export default { currentOrder, orders }
+import { orders, takeOrder, submitOrder, settleOrder } from './orders'
+export default { currentOrder, orders, takeOrder, submitOrder, settleOrder }

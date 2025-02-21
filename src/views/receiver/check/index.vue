@@ -7,29 +7,27 @@
         <div class="flex flex-col flex-1 gap-5 shadow-sm border p-10 rounded-md">
           <p class="text-sm">学生联系方式</p>
           <div class="text-lg font-bold flex flex-row items-center gap-10">
-            <div>132 1231 2322</div>
+            <div>{{ currentOrder?.seller_phone }}</div>
             <el-icon class="cursor-pointer"><Phone /></el-icon>
           </div>
         </div>
         <div class="flex flex-col flex-1 gap-5 shadow-sm border p-10 rounded-md">
           <p class="text-sm">宿舍位置</p>
           <div class="text-lg font-bold flex flex-row items-center gap-10">
-            <div>位置位置位置位置位</div>
-            <el-icon class="cursor-pointer"><Phone /></el-icon>
+            <div>{{ currentOrder?.address }}</div>
           </div>
         </div>
         <div class="flex flex-col flex-1 gap-5 shadow-sm border p-10 rounded-md">
           <p class="text-sm">预估重量</p>
           <div class="text-lg font-bold flex flex-row items-center gap-10">
-            <div>13kg</div>
-            <el-icon class="cursor-pointer"><Phone /></el-icon>
+            <div>{{ currentOrder?.weight }} kg</div>
           </div>
         </div>
       </div>
     </div>
     <el-divider></el-divider>
     <!-- 实际重量输入 -->
-    <el-form label-width="100px" ref="formRef" :model="form" label-position="top">
+    <el-form label-width="100px" ref="formRef" label-position="top">
       <el-form-item label="实际重量录入" prop="weight">
         <div class="flex items-center m-5">
           <el-input v-model="weight" placeholder="请输入实际重量" type="number">
@@ -48,62 +46,68 @@
     <div class="mb-6">
       <div class="font-semibold">费用明细</div>
       <div class="flex justify-between mt-2 px-10">
-        <span>总金额 ({{ weight | 0 }} kg x ¥2/kg)</span>
-        <span>¥{{ weight * 2 }}</span>
+        <span>总金额 ({{ weight ?? 0 }} kg x ¥2/kg)</span>
+        <span>¥{{ (weight ?? 0) * 2 }}</span>
       </div>
       <div class="flex justify-between mt-2 px-10">
         <span>跑腿费 (20%)</span>
-        <span>¥{{ (weight * 2 * 0.2).toFixed(2) }}</span>
+        <span>¥{{ ((weight ?? 0) * 2 * 0.2).toFixed(2) }}</span>
       </div>
       <div class="flex justify-between mt-2 px-10">
         <span>学生获得金额</span>
-        <span>¥{{ (weight * 2 * 0.8).toFixed(2) }}</span>
+        <span>¥{{ ((weight ?? 0) * 2 * 0.8).toFixed(2) }}</span>
       </div>
     </div>
 
     <div class="flex justify-end w-full space-x-2 gap-10 mt-auto">
       <el-button @click="resetForm(formRef)">清空</el-button>
-      <el-button type="primary" @click="submitForm()">提交</el-button>
+      <el-button type="primary" @click="submitForm()">提交并结算</el-button>
     </div>
-    <!-- 提交按钮
-    <div class="text-center">
-      <el-button type="primary" @click="handleSubmit">提交</el-button>
-    </div> -->
   </div>
 </template>
 
 <script lang="ts" setup>
-import {
-  ElNotification,
-  type FormInstance,
-  type UploadProps,
-  type UploadUserFile
-} from 'element-plus'
-import { reactive, ref, watch } from 'vue'
+import { ElNotification, type FormInstance } from 'element-plus'
+import { ref } from 'vue'
 import { ImageUploader } from '@/components'
+import { useDefaultRequest } from '@/utils/request'
+import { ReceiverAPI } from '@/apis'
+import router from '@/router'
 const formRef = ref()
-type upload = {
-  name: string
-  url: string
-}
 const img_url = ref<string>('')
-const weight = ref<number>(0)
-const form = ref({
-  weight: 0,
-  img: <upload[]>[]
-})
+const weight = ref<number>()
 // 移除图片
+const currentOrder = ref()
+
+useDefaultRequest(ReceiverAPI.currentOrder(), (res: any) => {
+  if (res.data === null) {
+    router.push('/receiver')
+  }
+  currentOrder.value = res.data
+})
 
 const submitForm = async () => {
-  if (weight.value === 0) {
+  if (!weight.value) {
     ElNotification.error('请输入重量')
     return
   }
-  if (!img_url.value) {
+  if (!img_url.value || img_url.value === '') {
     ElNotification.error('请上传验收图片')
     return
   }
+
   //  TODO 上传
+  useDefaultRequest(
+    ReceiverAPI.submitOrder({ weight: Number(weight.value), img: img_url.value }),
+    () => {
+      ElNotification.success('提交成功')
+      router.push('/receiver')
+    }
+  )
+
+  useDefaultRequest(ReceiverAPI.settleOrder(), () => {
+    ElNotification.success('订单已结算')
+  })
 }
 
 const resetForm = (formEl: FormInstance | undefined) => {

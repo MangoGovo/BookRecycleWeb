@@ -2,4 +2,5 @@ import UserAPI from './user'
 import MarketAPI from './student/market'
 import ReceiverAPI from './receriver'
 import feedback from './student/feedback'
-export { UserAPI, MarketAPI, ReceiverAPI, feedback }
+import recycle from './student/recycle'
+export { UserAPI, MarketAPI, ReceiverAPI, feedback, recycle }

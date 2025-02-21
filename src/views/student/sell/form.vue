@@ -7,40 +7,26 @@
     <el-form label-width="100px" ref="formRef" :model="form" :rules="rules">
       <el-form-item label="预估重量" prop="weight">
         <div class="flex items-center">
-          <el-input v-model="form.weight" placeholder="请输入预估重量">
+          <el-input v-model="form.weight" placeholder="请输入预估重量" type="number">
             <template #suffix>kg</template>
           </el-input>
         </div>
       </el-form-item>
 
       <el-form-item label="旧书照片" prop="img">
-        <el-upload
-          class="upload-box"
-          action="#"
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-        >
-          <el-icon v-if="form.img != ''"><Plus /></el-icon>
-        </el-upload>
+        <ImageUploader v-model="form.img" />
       </el-form-item>
 
-      <el-form-item label="上门地址" prop="address">
+      <!-- <el-form-item label="上门地址" prop="address">
         <el-input v-model="form.address" placeholder="请输入上门地址"></el-input>
-      </el-form-item>
+      </el-form-item> -->
 
-      <el-form-item label="联系方式" prop="phone">
+      <!-- <el-form-item label="联系方式" prop="phone">
         <el-input v-model="form.phone" placeholder="请输入联系方式" :width="10"></el-input>
-      </el-form-item>
+      </el-form-item> -->
 
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="form.remark"
-          type="textarea"
-          rows="10"
-          placeholder="请输入备注"
-        ></el-input>
+      <el-form-item label="备注" prop="note">
+        <el-input v-model="form.note" type="textarea" rows="10" placeholder="请输入备注"></el-input>
       </el-form-item>
 
       <!-- 提交 & 清空 按钮 -->
@@ -55,19 +41,30 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
-import { Plus } from '@element-plus/icons-vue'
-import type { FormInstance, UploadProps } from 'element-plus'
-
+import { ElNotification, type FormInstance, type UploadProps } from 'element-plus'
+import { ImageUploader } from '@/components'
+import { useRequest } from 'vue-hooks-plus'
+import { recycle } from '@/apis'
+import { startLoading } from '@/utils/loading'
+import { useDefaultRequest } from '@/utils/request'
+import router from '@/router'
 // 是否显示预览
 const showPreview = ref<boolean>(false)
 const previewImg = ref<string>('')
 const formRef = ref<FormInstance>()
 // 表单数据
+type formData = {
+  weight: number
+  // address: '',
+  // phone: '',
+  note: string
+  img: string
+}
 const form = ref({
-  weight: '',
-  address: '',
-  phone: '',
-  remark: '',
+  weight: 0,
+  // address: '',
+  // phone: '',
+  note: '',
   img: ''
 })
 
@@ -81,22 +78,20 @@ const rules = {
     { required: true, message: '请输入联系方式', trigger: 'blur' },
     { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: 'blur' }
   ],
-  fileList: [{ required: true, message: '请上传至少一张旧书照片', trigger: 'change' }]
+  img: [{ required: true, message: '请上传至少一张旧书照片', trigger: 'change' }]
 }
 
-// 图片预览
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  previewImg.value = uploadFile.url!
-  showPreview.value = true
-}
-
-// 移除图片
-const handleRemove = (file: any, img: string) => {
-  form.value.img = img
-}
 // 提交表单
-const submitForm = (formEl: FormInstance | undefined) => {
-  console.log('提交数据：', form.value)
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (!valid) {
+      return
+    }
+    useDefaultRequest(recycle.createRecycleOrder(form.value), (res: any) => {
+      router.go(0)
+    })
+  })
 }
 // 清空表单
 const resetForm = (formEl: FormInstance | undefined) => {

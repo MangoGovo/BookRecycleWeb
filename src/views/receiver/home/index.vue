@@ -28,6 +28,7 @@ import { useRequest } from 'vue-hooks-plus'
 import { ReceiverAPI } from '@/apis'
 import { closeLoading, startLoading } from '@/utils/loading'
 import router from '@/router'
+import { useDefaultRequest } from '@/utils/request'
 const orders = ref<oldBook[]>()
 
 const currentOrder = ref<oldBook | null>(null)
@@ -38,39 +39,17 @@ const handleRowClick = (row: any) => {
   dialog.value?.open()
 }
 // 获取所有订单
-useRequest(() => ReceiverAPI.orders(), {
-  onBefore: () => startLoading(),
-  onSuccess(res: any) {
-    if (res.code !== 200) {
-      ElNotification.error(res.msg)
-      return
-    }
-    orders.value = res.data.order_list
-  },
-  onError(e) {
-    console.log(e)
-  },
-  onFinally: () => closeLoading()
+useDefaultRequest(ReceiverAPI.orders(), (res: any) => {
+  orders.value = res.data.order_list
 })
-
 // 获取当前接单
-useRequest(() => ReceiverAPI.currentOrder(), {
-  onBefore: () => startLoading(),
-  onSuccess(res: any) {
-    if (res.code !== 200) {
-      ElNotification.error(res.msg)
-      return
-    }
-    currentOrder.value = res.data.order
-  },
-  onError(e) {
-    console.log(e)
-  },
-  onFinally: () => closeLoading()
+useDefaultRequest(ReceiverAPI.currentOrder(), (res: any) => {
+  currentOrder.value = res.data
 })
 watch(currentOrder, () => {
+  console.log(currentOrder.value)
   if (currentOrder.value) {
-    router.push({ path: '/receiver/check'})
+    router.push('/receiver/check')
   }
 })
 </script>

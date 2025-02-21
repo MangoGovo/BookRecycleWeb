@@ -24,8 +24,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElDialog, ElButton } from 'element-plus'
+import { ElDialog, ElButton, ElNotification } from 'element-plus'
 import type { oldBook } from '@/types/oldbook'
+import { useDefaultRequest } from '@/utils/request'
+import { ReceiverAPI } from '@/apis'
+import { BookInfo } from '..'
+import router from '@/router'
 
 const dialogVisible = ref(false)
 
@@ -34,12 +38,15 @@ const open = () => {
 }
 
 const takeOrder = () => {
-  alert('接单')
+  const id = props.bookInfo?.id
+  if (id)
+    useDefaultRequest(ReceiverAPI.takeOrder({ id }), () => {
+      ElNotification.success('接单成功')
+      router.push('/receiver/check')
+    })
 }
 
-
-
-defineProps<{
+const props = defineProps<{
   bookInfo: oldBook | undefined
 }>()
 
