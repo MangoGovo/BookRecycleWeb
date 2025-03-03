@@ -21,8 +21,16 @@
               size="large"
               type="primary"
               plain
-              :disabled="loginStore.userID == bookInfo.user_id"
-              >联系主人{{ loginStore.userID == bookInfo.user_id ? '(您自己)' : '' }}</el-button
+              :disabled="loginStore.userID === bookInfo.user_id"
+              >联系主人{{ loginStore.userID === bookInfo.user_id ? '(您自己)' : '' }}</el-button
+            >
+            <el-button
+              @click="complaim"
+              size="large"
+              type="danger"
+              plain
+              v-if="loginStore.userID !== bookInfo.user_id"
+              >举报</el-button
             >
           </div>
         </el-card>
@@ -49,6 +57,9 @@ const contactOwner = () => {
   tempStore.setContactor(props.bookInfo.name, props.bookInfo.user_id)
   dialogVisible.value = false
   router.push('/student/chat')
+}
+const complaim = () => {
+  // TODO 举报
 }
 const props = defineProps<{
   bookInfo: book

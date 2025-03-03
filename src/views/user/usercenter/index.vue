@@ -25,6 +25,10 @@
           >
             <Key />
           </el-icon>
+          <div class="p-4 mx-15">
+            <el-button type="primary" plain @click="showWithdrawalDialog">提现</el-button>
+            <WithdrawalDialog @onSuccess="update" ref="withdrawalDialog" />
+          </div>
         </div>
       </el-card>
       <el-card class="w-3/5 mt-30 overflow-auto mb-25">
@@ -52,10 +56,7 @@
 
 <script setup lang="ts">
 import { UserAPI } from '@/apis'
-import { closeLoading, startLoading } from '@/utils/loading'
-import { ElNotification } from 'element-plus'
 import { ref, reactive } from 'vue'
-import { useRequest } from 'vue-hooks-plus'
 
 const moneyVisible = ref<boolean>(false)
 const userInfo = reactive({
@@ -70,13 +71,8 @@ type bill = {
   date: string
 }
 const bills = ref<bill[]>()
-useRequest(() => UserAPI.info(), {
-  onBefore: () => startLoading(),
-  onSuccess(res: any) {
-    if (res.code !== 200) {
-      ElNotification.error(res.msg)
-      return
-    }
+const update = () => {
+  useDefaultRequest(UserAPI.info(), (res: any) => {
     const data = res.data
     userInfo.studentID = data.student_id
     userInfo.name = data.name
@@ -84,13 +80,15 @@ useRequest(() => UserAPI.info(), {
     userInfo.balance = data.balance
     userInfo.reputation = data.reputation
     bills.value = data.bill
-  },
-  onError(e) {
-    ElNotification.error('获取个人信息失败，请重试')
-    console.log('获取个人信息失败', e)
-  },
-  onFinally: () => closeLoading()
-})
+  })
+}
+update()
+import WithdrawalDialog from '@/components/money/index.vue'
+import { useDefaultRequest } from '@/utils/request'
+const withdrawalDialog = ref()
+const showWithdrawalDialog = () => {
+  withdrawalDialog.value.open()
+}
 </script>
 
 <style scoped></style>

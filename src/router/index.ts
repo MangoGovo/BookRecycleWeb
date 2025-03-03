@@ -46,7 +46,23 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'admin',
-      component: AdminViews.HomeView
+      // component: AdminViews.HomeView
+      redirect: '/admin/book'
+    },
+    {
+      path: '/admin/book',
+      name: '/admin/book',
+      component: AdminViews.BookView
+    },
+    {
+      path: '/admin/report',
+      name: '/admin/report',
+      component: AdminViews.ReportView
+    },
+    {
+      path: '/admin/withdrawal',
+      name: '/admin/withdrawal',
+      component: AdminViews.WithdrawalView
     },
     {
       path: '/student/chat',

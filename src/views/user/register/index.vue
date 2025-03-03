@@ -39,7 +39,7 @@
               type="password"
             ></el-input>
           </div>
-          <div class="w-full" v-if="formData.userType == UserType.Admin">
+          <!-- <div class="w-full" v-if="formData.userType == UserType.Admin">
             <div class="text-xl mb-5">管理员注册密码</div>
             <el-input
               class="h-45 mt-10 dark:rounded dark:bg-customGray_shallow"
@@ -48,7 +48,7 @@
               @keyup.enter="register"
               type="password"
             ></el-input>
-          </div>
+          </div> -->
           <div class="w-full">
             <div class="text-xl mb-5">登陆身份</div>
             <el-radio-group v-model="formData.userType" class="text-center w-full">

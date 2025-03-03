@@ -26,7 +26,43 @@
         style="--el-switch-on-color: #000000"
       />
       <div class="flex gap-5">
-        <a class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow" @click="feedback">
+        <!-- 书籍处理 -->
+        <a
+          class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow"
+          @click="() => router.push('/admin/book')"
+          v-if="loginStore.userType === UserType.Admin"
+        >
+          <el-icon>
+            <Notebook />
+          </el-icon>
+        </a>
+        <!-- 举报处理 -->
+        <a
+          class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow"
+          @click="() => router.push('/admin/report')"
+          v-if="loginStore.userType === UserType.Admin"
+        >
+          <el-icon>
+            <WarnTriangleFilled />
+          </el-icon>
+        </a>
+
+        <!-- 提现处理 -->
+        <a
+          class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow"
+          @click="() => router.push('/admin/withdrawal')"
+          v-if="loginStore.userType === UserType.Admin"
+        >
+          <el-icon>
+            <Money />
+          </el-icon>
+        </a>
+
+        <a
+          class="btn btn-ghost text-xl dark:hover:bg-customGray_more_shallow"
+          @click="feedback"
+          v-if="loginStore.userType === UserType.Student"
+        >
           <el-icon>
             <MessageBox />
           </el-icon>
@@ -60,7 +96,6 @@
         </el-dropdown>
       </div>
     </div>
-
     <router-view v-slot="{ Component, route }" class="overflow-none" :key="$route.fullPath">
       <transition name="fade" mode="out-in">
         <div :key="route.name" class="flex flex-grow">
@@ -74,7 +109,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import { useDarkModeSwitch } from '@/utils/darkMode'
-import { ChatLineSquare, HomeFilled, UserFilled } from '@element-plus/icons-vue'
+import { ChatLineSquare, HomeFilled, Money, Notebook, UserFilled } from '@element-plus/icons-vue'
 import router from './router'
 import { ref, watch } from 'vue'
 import { useMainStore } from '@/stores'
@@ -116,6 +151,7 @@ watch(
       !['/login', '/register', '/forget', '/'].includes(newRouter.path) &&
       !loginStore.isActivated
     ) {
+      if (loginStore.userType === UserType.Admin) return
       ElNotification.warning('初次登陆，请先补充个人信息')
       activateForm.value?.open()
     } else {
