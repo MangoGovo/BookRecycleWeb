@@ -17,7 +17,6 @@ export const useWebSocket = () => {
   }
 
   socket.onmessage = (event) => {
-    console.log('onmessagfe')
     const data: messageResp = JSON.parse(event.data.trim())
     if (data.receiver_name === '') {
       data.receiver_name = '账号未激活'
@@ -36,11 +35,6 @@ export const useWebSocket = () => {
   socket.onerror = (error) => {
     console.error('WebSocket Error:', error)
   }
-  // const sendMessage = (msg: messageReq) => {
-  //   await socket.on
-  //   socket.send(JSON.stringify(msg))
-  // }
-
   const sendMessage = (msg: messageReq) => {
     return new Promise<void>((resolve, reject) => {
       if (isConnected.value) {
