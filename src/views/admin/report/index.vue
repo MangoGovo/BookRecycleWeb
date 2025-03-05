@@ -46,9 +46,7 @@ const reportList = ref<Report[]>()
 
 const update = () => {
   useDefaultRequest(AdminAPI.getReportList(), (res: any) => {
-    reportList.value = res.data.report_list.filter((r: any) => {
-      return r.status === 1
-    })
+    reportList.value = res.data.report_list
   })
 }
 update()
@@ -58,13 +56,13 @@ const statusFormatter = (row: any) => {
   return statusMap[row.status - 1] || '未知状态'
 }
 
-const statusTagType = (status: string) => {
+const statusTagType = (status: number) => {
   switch (status) {
-    case '待处理':
-      return 'warning'
-    case '已处理':
+    case 1:
+      return 'info'
+    case 2:
       return 'success'
-    case '已回复':
+    case 3:
       return 'danger'
     default:
       return 'info'

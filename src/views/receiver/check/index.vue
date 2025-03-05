@@ -8,7 +8,7 @@
           <p class="text-sm">学生联系方式</p>
           <div class="text-lg font-bold flex flex-row items-center gap-10">
             <div>{{ currentOrder?.seller_phone }}</div>
-            <el-icon class="cursor-pointer"><Phone /></el-icon>
+            <el-icon class="cursor-pointer" @click="contact"><Phone /></el-icon>
           </div>
         </div>
         <div class="flex flex-col flex-1 gap-5 shadow-sm border p-10 rounded-md">
@@ -30,7 +30,7 @@
     <el-form label-width="100px" ref="formRef" label-position="top">
       <el-form-item label="实际重量录入" prop="weight">
         <div class="flex items-center m-5">
-          <el-input v-model="weight" placeholder="请输入实际重量" type="number">
+          <el-input v-model="weight" placeholder="请输入实际重量" type="number" max="100">
             <template #suffix>kg</template>
           </el-input>
         </div>
@@ -46,7 +46,7 @@
     <div class="mb-6">
       <div class="font-semibold">费用明细</div>
       <div class="flex justify-between mt-2 px-10">
-        <span>总金额 ({{ weight ?? 0 }} kg x ¥2/kg)</span>
+        <span>总金额 ({{ weight ?? 0 }} kg x ¥1.6/kg)</span>
         <span>¥{{ ((weight ?? 0) * 1.6).toFixed(2) }}</span>
       </div>
       <div class="flex justify-between mt-2 px-10">
@@ -85,6 +85,11 @@ useDefaultRequest(ReceiverAPI.currentOrder(), (res: any) => {
   }
   currentOrder.value = res.data
 })
+
+const contact = () =>{
+  navigator.clipboard.writeText(currentOrder.value?.seller_phone)
+  ElNotification.success("复制成功")
+}
 
 const submitForm = async () => {
   if (!weight.value) {

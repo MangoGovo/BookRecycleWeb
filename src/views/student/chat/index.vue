@@ -35,10 +35,12 @@
       <div class="chat-input gap-20">
         <el-input
           v-model="newMessage"
-          placeholder="Type a message..."
+          placeholder="请键入文本..."
           @keyup.enter="send"
           class="w-full"
           size="large"
+          maxlength="100"
+          show-word-limit
         />
 
         <el-button @click="send" type="primary" size="large" class="ml-2">Send</el-button>
@@ -52,6 +54,7 @@ import { computed, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue
 import { useWebSocket } from '@/utils/websocket'
 import type { messageResp } from '@/types/message'
 import { useMainStore } from '@/stores'
+import { Message, Position } from '@element-plus/icons-vue'
 
 const { sendMessage, messageList } = useWebSocket()
 const loginStore = useMainStore().useLoginStore()
@@ -94,6 +97,7 @@ const send = () => {
       content: newMessage.value
     })
   }
+  newMessage.value = ''
 }
 
 // 处理跳转自动发信息
@@ -107,6 +111,7 @@ onMounted(() =>
         content: `你好, 我对你的书《${contactor.bookname}》很感兴趣, 方便聊一聊吗`,
         receiver: contactor.receiver_id
       })
+      tempStore.clearContactor()
     }
   })()
 )
