@@ -10,8 +10,8 @@
         <el-table-column label="操作">
           <template v-slot="scope">
             <div class="flex flex-row">
-              <el-button @click="handlePass(scope.row)" type="success" plain> 通过 </el-button>
-              <el-button @click="handleDeny(scope.row)" type="danger"> 撤销 </el-button>
+              <el-button @click="handleAccept(scope.row)" type="success" plain> 通过 </el-button>
+              <el-button @click="handleReject(scope.row)" type="danger"> 拒绝 </el-button>
             </div>
           </template>
         </el-table-column>
@@ -22,23 +22,30 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElTable, ElTableColumn, ElTag, ElButton } from 'element-plus'
+import { ElTable, ElTableColumn, ElTag, ElButton, ElNotification } from 'element-plus'
 import type { book } from '@/types/book'
 import { useDefaultRequest } from '@/utils/request'
 import { AdminAPI } from '@/apis'
 
 const bookList = ref<book[]>()
-
-useDefaultRequest(AdminAPI.getBookReviewList(), (res: any) => {
-  bookList.value = res.data.review_book_list
-})
-
-const handleDeny = (row: book) => {
-  console.log('撤销', row)
+const update = () => {
+  useDefaultRequest(AdminAPI.getBookReviewList(), (res: any) => {
+    bookList.value = res.data.review_book_list
+  })
+}
+update()
+const handleReject = (row: book) => {
+  useDefaultRequest(AdminAPI.rejectBookReview({ id: row?.id }), () => {
+    ElNotification.success('拒绝成功')
+    update()
+  })
 }
 
-const handlePass = (row: book) => {
-  console.log('通过', row)
+const handleAccept = (row: book) => {
+  useDefaultRequest(AdminAPI.acceptBookReview({ id: row?.id }), () => {
+    ElNotification.success('通过成功')
+    update()
+  })
 }
 </script>
 

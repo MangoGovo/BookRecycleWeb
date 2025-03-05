@@ -68,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElNotification } from 'element-plus'
+import { ElDialog, ElNotification } from 'element-plus'
 import { ref, computed, watch, onMounted } from 'vue'
 import { UserAPI } from '@/apis'
 import UserType from '@/types/enums/userType'
@@ -76,6 +76,7 @@ import router from '@/router'
 import { useRequest } from 'vue-hooks-plus'
 import { startLoading, closeLoading } from '@/utils/loading'
 import { useMainStore } from '@/stores'
+import { ElMessageBox } from 'element-plus'
 const password = ref<string>('')
 const username = ref<string>('')
 const loginType = ref<number>(UserType.Student)
@@ -96,7 +97,7 @@ const userTypes = [
 ]
 
 onMounted(() => {
-  console.log("清空登陆信息")
+  console.log('清空登陆信息')
   loginStore.clearLoginData()
 })
 
@@ -123,7 +124,7 @@ const send = () => {
         const data = res.data
         console.log(data)
         ElNotification.success('登陆成功')
-        loginStore.setLoginData(data.user_id,true, data.activated, data.token, t)
+        loginStore.setLoginData(data.user_id, true, data.activated, data.token, t)
         router.push('/')
       },
       onError(e) {
@@ -136,7 +137,8 @@ const send = () => {
 }
 
 const forget = () => {
-  router.push('/forget')
+  // router.push('/forget')
+  ElMessageBox.alert('忘记密码请联系管理员找回密码', '忘记密码')
 }
 
 const register = () => {

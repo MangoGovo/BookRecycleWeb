@@ -4,10 +4,16 @@
       <el-table-column prop="name" label="书籍标题" />
       <el-table-column prop="author" label="作者" />
       <el-table-column prop="price" label="价格" />
+      <el-table-column prop="status" label="状态" :formatter="statusFormatter" />
       <el-table-column label="Operations">
         <template #default="scope">
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
-            删除
+          <el-button
+            size="small"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+            v-if="scope.row.status === 1"
+          >
+            下架
           </el-button>
         </template>
       </el-table-column>
@@ -23,6 +29,13 @@ import { ref } from 'vue'
 import type { book } from '@/types/book'
 const dialogVisible = ref(false)
 const bookList = ref<book[]>()
+
+const statusFormatter = (row: any) => {
+  const statusMap = ['已上架', '已下架', '待审核', '审核不通过']
+
+  return statusMap[row.status - 1] || '未知状态'
+}
+
 const handleDelete = (index: number, row: any) => {
   useDefaultRequest(MarketAPI.delMyProduct({ id: row.id }), () => {
     ElNotification.success('删除成功')

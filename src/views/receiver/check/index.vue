@@ -47,15 +47,15 @@
       <div class="font-semibold">费用明细</div>
       <div class="flex justify-between mt-2 px-10">
         <span>总金额 ({{ weight ?? 0 }} kg x ¥2/kg)</span>
-        <span>¥{{ (weight ?? 0) * 2 }}</span>
+        <span>¥{{ ((weight ?? 0) * 1.6).toFixed(2) }}</span>
       </div>
       <div class="flex justify-between mt-2 px-10">
         <span>跑腿费 (20%)</span>
-        <span>¥{{ ((weight ?? 0) * 2 * 0.2).toFixed(2) }}</span>
+        <span>¥{{ ((weight ?? 0) * 1.6 * 0.2).toFixed(2) }}</span>
       </div>
       <div class="flex justify-between mt-2 px-10">
         <span>学生获得金额</span>
-        <span>¥{{ ((weight ?? 0) * 2 * 0.8).toFixed(2) }}</span>
+        <span>¥{{ ((weight ?? 0) * 1.6 * 0.8).toFixed(2) }}</span>
       </div>
     </div>
 

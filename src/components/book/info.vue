@@ -1,5 +1,6 @@
 <template>
   <el-dialog v-model="dialogVisible" title="书籍信息" width="50%">
+    <ReportDialog ref="reportDialog" :book-info="props.bookInfo" />
     <div class="flex justify-center gap-20">
       <!-- 左侧固定大小图片 -->
       <div class="h-500 w-300 overflow-hidden rounded-lg">
@@ -21,15 +22,15 @@
               size="large"
               type="primary"
               plain
-              :disabled="loginStore.userID === bookInfo.user_id"
-              >联系主人{{ loginStore.userID === bookInfo.user_id ? '(您自己)' : '' }}</el-button
+              :disabled="loginStore.userID === bookInfo?.user_id"
+              >联系主人{{ loginStore.userID === bookInfo?.user_id ? '(您自己)' : '' }}</el-button
             >
             <el-button
               @click="complaim"
               size="large"
               type="danger"
               plain
-              v-if="loginStore.userID !== bookInfo.user_id"
+              v-if="loginStore.userID !== bookInfo?.user_id"
               >举报</el-button
             >
           </div>
@@ -45,7 +46,8 @@ import { ElDialog, ElButton } from 'element-plus'
 import { type book } from '@/types/book'
 import { useMainStore } from '@/stores'
 import router from '@/router'
-
+import ReportDialog from '../student/report.vue'
+const reportDialog = ref<InstanceType<typeof ReportDialog> | null>(null)
 const dialogVisible = ref(false)
 const tempStore = useMainStore().useTempStore()
 const loginStore = useMainStore().useLoginStore()
@@ -54,15 +56,15 @@ const open = () => {
 }
 
 const contactOwner = () => {
-  tempStore.setContactor(props.bookInfo.name, props.bookInfo.user_id)
+  tempStore.setContactor(props.bookInfo!.name, props.bookInfo!.user_id)
   dialogVisible.value = false
   router.push('/student/chat')
 }
 const complaim = () => {
-  // TODO 举报
+  reportDialog.value?.open()
 }
 const props = defineProps<{
-  bookInfo: book
+  bookInfo: book | null
 }>()
 
 defineExpose({

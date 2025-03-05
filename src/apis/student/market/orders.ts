@@ -1,10 +1,16 @@
 import { request } from '@/apis/axios'
 
-const orders = () => {
+export const orders = () => {
   return request('/api/student/market/orders', {
     method: 'GET',
     jwt: true
   })
 }
 
-export default orders
+export const report = (data: { book_id: number; title: string }) => {
+  return request('/api/student/market/report', {
+    method: 'POST',
+    data: data,
+    jwt: true
+  })
+}

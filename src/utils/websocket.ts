@@ -3,13 +3,13 @@ import { ref } from 'vue'
 import { useMainStore } from '@/stores'
 
 const messageList = ref<messageResp[]>([])
-const wsUrl = 'ws://localhost:8080/ws'
+const wsUrl = 'ws://118.178.233.192:8080/ws'
 
 export const useWebSocket = () => {
   const loginStore = useMainStore().useLoginStore()
   const token = loginStore.token
 
-  const socket = new WebSocket(`ws://localhost:8080/ws?token=${token}`)
+  const socket = new WebSocket(`${wsUrl}?token=${token}`)
   const isConnected = ref(false)
   socket.onopen = () => {
     console.log('Connected to WebSocket server')

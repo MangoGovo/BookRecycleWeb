@@ -1,3 +1,10 @@
-import { getBookReviewList } from './book'
+import { getBookReviewList, acceptBookReviewList, rejectBookReviewList } from './book'
 import { getWithdrawalList } from './withdrawal'
-export default { getBookReviewList, getWithdrawalList }
+import { getReportList } from './report'
+export default {
+  getBookReviewList,
+  getWithdrawalList,
+  acceptBookReview: acceptBookReviewList,
+  rejectBookReview: rejectBookReviewList,
+  getReportList
+}

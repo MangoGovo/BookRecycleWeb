@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import router from '@/router'
+import { Box, Money } from '@element-plus/icons-vue'
 
 const sell = () => {
   router.push('/student/sell')

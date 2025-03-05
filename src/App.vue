@@ -142,6 +142,8 @@ const feedback = () => {
 }
 
 const usercenter = () => {
+  if (loginStore.userType === UserType.Admin) return
+
   router.push('/usercenter')
 }
 watch(

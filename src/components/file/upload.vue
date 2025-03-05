@@ -26,7 +26,7 @@ const loginStore = useMainStore().useLoginStore()
 
 const showPreview = ref<boolean>(false)
 const previewImg = ref<string>()
-const uploadUrl = `${import.meta.env.VITE_HOST}api/upload`
+const uploadUrl = `/api/upload`
 const fileList = ref<UploadUserFile[]>()
 // 接收父组件传递的 fileList
 const img_url = defineModel({ type: String })

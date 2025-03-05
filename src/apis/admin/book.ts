@@ -9,3 +9,25 @@ export const getBookReviewList = () => {
     }
   })
 }
+
+export const acceptBookReviewList = (data: { id: number }) => {
+  return request('/api/admin/review/update', {
+    method: 'PUT',
+    jwt: true,
+    data: {
+      id: data.id,
+      status: 1
+    }
+  })
+}
+
+export const rejectBookReviewList = (data: { id: number }) => {
+  return request('/api/admin/review/update', {
+    method: 'PUT',
+    jwt: true,
+    data: {
+      id: data.id,
+      status: 4
+    }
+  })
+}

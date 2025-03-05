@@ -22,7 +22,7 @@ import { AdminAPI } from '@/apis'
 const withdrawalList = ref<book[]>()
 useDefaultRequest(AdminAPI.getWithdrawalList(), (res: any) => {
   console.log(res.data)
-  withdrawalList.value = res.data
+  withdrawalList.value = res.data.withdrawal_list
 })
 </script>
 

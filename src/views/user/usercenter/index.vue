@@ -39,7 +39,7 @@
               <div class="text-sm font-bold">
                 {{ Number(b.money) > 0 ? `收入` : '支出' }}
               </div>
-              <div class="text-xs font-thin">{{ b.date }}</div>
+              <div class="text-xs font-thin">{{ b.time }}</div>
             </div>
             <div class="text-xl font-bold mr-10 flex items-end">￥{{ b.money }}</div>
           </div>
@@ -68,7 +68,7 @@ const userInfo = reactive({
 })
 type bill = {
   money: string
-  date: string
+  time: string
 }
 const bills = ref<bill[]>()
 const update = () => {
@@ -79,7 +79,7 @@ const update = () => {
     userInfo.phone = data.phone
     userInfo.balance = data.balance
     userInfo.reputation = data.reputation
-    bills.value = data.bill
+    bills.value = data.bills
   })
 }
 update()

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <BookInfo v-if="selectedBook" :bookInfo="selectedBook" ref="BookInfoView" />
+    <BookInfo :bookInfo="selectedBook" ref="BookInfoView" />
     <Sell ref="SellDialog" />
     <StudentOrders ref="StudentOrdersDialog" />
     <el-container>
@@ -72,7 +72,7 @@ import { useRoute } from 'vue-router'
 import { type book } from '@/types/book'
 import { BookInfo, StudentOrders } from '@/components'
 import Sell from '@/components/student/sell.vue'
-const selectedBook = ref<book>()
+const selectedBook = ref<book | null>(null)
 const BookInfoView = ref<InstanceType<typeof BookInfo> | null>(null)
 const SellDialog = ref<InstanceType<typeof Sell> | null>(null)
 const StudentOrdersDialog = ref<InstanceType<typeof StudentOrders> | null>(null)
