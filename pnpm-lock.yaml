@@ -20,6 +20,9 @@ importers:
       go-captcha-vue:
         specifier: ^2.0.6
         version: 2.0.6(vue@3.5.13(typescript@5.7.3))
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       pinia:
         specifier: ^2.3.1
         version: 2.3.1(typescript@5.7.3)(vue@3.5.13(typescript@5.7.3))
@@ -29,6 +32,9 @@ importers:
       pnpm:
         specifier: ^9.15.4
         version: 9.15.4
+      qs:
+        specifier: ^6.14.0
+        version: 6.14.0
       socket.io-client:
         specifier: ^4.8.1
         version: 4.8.1
