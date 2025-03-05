@@ -97,7 +97,6 @@ const formData = ref({
   username: '',
   password: '',
   repeatPassword: '',
-  adminPassword: '',
   userType: UserType.Student
 })
 

@@ -2,15 +2,13 @@
   <el-container>
     <el-aside width="100px">
       <el-scrollbar>
-        <el-menu
-          :default-active="String(activeChat)"
-          @select="handleChatSelect"
-          :collapse="false"
-          v-for="(msg, other) in computedMaps.msgMap"
-        >
-          <el-menu-item :index="String(other)" :key="other">{{
-            computedMaps.nameMap[other]
-          }}</el-menu-item>
+        <el-menu :default-active="String(activeChat)" @select="handleChatSelect" :collapse="false">
+          <el-menu-item
+            v-for="(msg, other) in computedMaps.msgMap"
+            :key="other"
+            :index="String(other)"
+            >{{ computedMaps.nameMap[other] }}</el-menu-item
+          >
         </el-menu>
       </el-scrollbar>
     </el-aside>

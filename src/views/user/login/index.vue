@@ -16,7 +16,7 @@
             <div class="text-xl mb-5">账号</div>
             <el-input
               class="h-45 my-10 dark:rounded dark:bg-customGray_shallow"
-              :placeholder="placeholder + '密码'"
+              :placeholder="placeholder + '账号'"
               v-model="username"
             ></el-input>
           </div>
@@ -96,10 +96,10 @@ const userTypes = [
   }
 ]
 
-onMounted(() => {
-  console.log('清空登陆信息')
-  loginStore.clearLoginData()
-})
+// onMounted(() => {
+//   console.log('清空登陆信息')
+//   loginStore.clearLoginData()
+// })
 
 const placeholder = computed(() => {
   return userTypes.find((e) => e.value === loginType.value)?.msg || ''

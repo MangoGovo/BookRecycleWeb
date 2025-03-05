@@ -89,7 +89,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       return
     }
     useDefaultRequest(recycle.createRecycleOrder(form.value), (res: any) => {
-      router.go(0)
+      ElNotification.success('提交成功')
     })
   })
 }
