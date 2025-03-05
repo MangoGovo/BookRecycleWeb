@@ -9,6 +9,6 @@ type messageResp = {
   receiver: number
   receiver_name:string
   content: string
-  created_at: string
+  time: string
 }
 export type { messageReq, messageResp }

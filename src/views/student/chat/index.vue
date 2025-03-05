@@ -1,6 +1,6 @@
 <template>
-  <el-container class="">
-    <el-aside width="250px">
+  <el-container>
+    <el-aside width="100px">
       <el-scrollbar>
         <el-menu
           :default-active="String(activeChat)"
@@ -22,12 +22,15 @@
       </div>
       <el-scrollbar class="">
         <div v-for="msg in computedMaps.msgMap[activeChat || 0]" :key="msg.id" class="message">
-          <p :class="msg.sender === userID ? 'text-right' : 'text-left'">
-            <span class="message-sender"
-              >{{ msg.sender === userID ? '我' : msg.sender_name }}:
-            </span>
-            <span>{{ msg.content }}</span>
-          </p>
+          <div :class="['message-bubble', msg.sender === userID ? 'self' : 'other']">
+            <div class="bubble-content">
+              <span class="text-sm font-bold">{{
+                msg.sender === userID ? '我' : msg.sender_name
+              }}</span>
+              <span style="font-size: 0.65rem" class="mx-5 font-thin">{{ msg.time }}</span>
+              <div class="message-text">{{ msg.content }}</div>
+            </div>
+          </div>
         </div>
       </el-scrollbar>
 
@@ -50,11 +53,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeMount, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useWebSocket } from '@/utils/websocket'
 import type { messageResp } from '@/types/message'
 import { useMainStore } from '@/stores'
-import { Message, Position } from '@element-plus/icons-vue'
 
 const { sendMessage, messageList } = useWebSocket()
 const loginStore = useMainStore().useLoginStore()
@@ -136,5 +138,47 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   margin-top: 10px;
+}
+
+/* 添加气泡样式 */
+.message {
+  margin: 12px 0;
+  display: flex;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 12px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.self {
+  background: #409eff;
+  color: white;
+  margin-left: auto;
+  border-radius: 8px 8px 0 8px;
+}
+
+.other {
+  background: #f0f2f5;
+  color: #333;
+  margin-right: auto;
+  border-radius: 8px 8px 8px 0;
+}
+
+.message-text {
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+/* 调整现有样式 */
+.chat-main {
+  height: calc(100vh - 8vh);
+  padding: 20px;
+}
+
+.el-scrollbar {
+  height: calc(100% - 80px);
 }
 </style>
